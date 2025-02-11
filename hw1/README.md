@@ -6,3 +6,7 @@ npx eslint --fix
 
 Для запуска black, flake8, isort
 bash pre-commit 
+
+Для активации pre-commit
+pre-commit install
+
