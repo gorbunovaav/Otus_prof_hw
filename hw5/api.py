@@ -9,9 +9,6 @@ import hashlib
 import uuid
 from argparse import ArgumentParser
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from store import Store
-
-    
 
 SALT = "Otus"
 ADMIN_LOGIN = "admin"
@@ -217,72 +214,15 @@ def check_auth(request):
 
 
 def method_handler(request, ctx, store):
-    body = request.get("body")
-    if not body:
-        return {"error": "Empty request body"}, BAD_REQUEST
-
-    try:
-        method_request = MethodRequest(body)
-    except Exception as e:
-        return {"error": f"Invalid request: {e}"}, INVALID_REQUEST
-
-    # Аутентификация
-    if not check_auth(method_request):
-        return {"error": "Forbidden"}, FORBIDDEN
-
-    ctx["is_admin"] = method_request.is_admin
-    ctx["account"] = method_request.data.get("account")
-    ctx["login"] = method_request.data.get("login")
-
-    # Определение метода
-    method = body.get("method")
-    arguments = body.get("arguments", {})
-
-    if method == "online_score":
-        req = OnlineScoreRequest()
-        try:
-            req.first_name.validate(arguments.get("first_name"))
-            req.last_name.validate(arguments.get("last_name"))
-            req.phone.validate(arguments.get("phone"))
-            req.email.validate(arguments.get("email"))
-            req.birthday.validate(arguments.get("birthday"))
-            req.gender.validate(arguments.get("gender"))
-        except ValueError as e:
-            return {"error": str(e)}, INVALID_REQUEST
-
-        if method_request.is_admin:
-            response = {"score": 42}
-        else:
-            score = get_score(
-                store,
-                phone=arguments.get("phone"),
-                email=arguments.get("email"),
-                birthday=datetime.datetime.strptime(arguments.get("birthday"), "%d.%m.%Y") if arguments.get("birthday") else None,
-                gender=arguments.get("gender"),
-                first_name=arguments.get("first_name"),
-                last_name=arguments.get("last_name")
-            )
-            response = {"score": score}
-        return {"response": response}, OK
-
-    elif method == "clients_interests":
-        req = ClientsInterestsRequest()
-        try:
-            req.client_ids.validate(arguments.get("client_ids"))
-        except ValueError as e:
-            return {"error": str(e)}, INVALID_REQUEST
-
-        response = {cid: get_interests(store, cid) for cid in arguments.get("client_ids")}
-        return {"response": response}, OK
-
-    return {"error": f"Method '{method}' not found"}, INVALID_REQUEST
+    response, code = None, None
+    return response, code
 
 
 class MainHTTPHandler(BaseHTTPRequestHandler):
     router = {
         "method": method_handler
     }
-    store = Store()
+    store = None
 
     def get_request_id(self, headers):
         return headers.get('HTTP_X_REQUEST_ID', uuid.uuid4().hex)
