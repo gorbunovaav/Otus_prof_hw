@@ -23,7 +23,6 @@ def main():
         new_product = warehouse_service.cerate_product(name="test1", quntity=1, price=100)
         uow.commit()
         print(f"create product: {new_product}")
-        #todo add some actions
 
 if __name__ == "__main__":
     main()

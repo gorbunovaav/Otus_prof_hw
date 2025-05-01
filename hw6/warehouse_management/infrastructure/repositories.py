@@ -1,15 +1,15 @@
-from sqlalchemy.orm import Sessions
+from sqlalchemy.orm import Session
 from typing import List
 from domain.models import Order, Product
 from domain.repositories import ProductRepository, OrderRepository
-from .orm import ProductOrm, OrderOrm
+from .orm import ProductORM, OrderORM
 
 class SqlAlchemyProductRepository(ProductRepository):
     def __init__(self, session: Session):
         self.session=session
 
     def add(self, product:Product):
-        product_orm = ProductOrm(
+        product_orm = ProductORM(
             name=product.name,
             quntity=product.quntity
             price=product.price
@@ -29,8 +29,8 @@ class SqlAlchemyOrderRepository(OrderRepository):
         self.session=session
 
     def add(self, order:Order):
-        order_orm = OrderOrm()
-        order_orm.products= [self.session.query(ProductOrm).filter_by(id=p.id).one() fror p in order.products]
+        order_orm = OrderORM()
+        order_orm.products= [self.session.query(ProductORM).filter_by(id=p.id).one() for p in order.products]
         self.session.add(order_orm)
 
     def get(self, order_id: int)->Order:
@@ -38,7 +38,7 @@ class SqlAlchemyOrderRepository(OrderRepository):
         products = [Product(id=p.id, name=p.name, quntity=p.quntity, price=p.price) for p in order_orm.products]
         return Order(id=order_orm.id, products=products)
 
-    def list(self) -> List[Product]:
+    def list(self) -> List[Order]:
         orders_orm= self.session.query(OrderORM).all()
         orders=[]
         for order_orm in orders_orm:
