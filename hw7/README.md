@@ -2,15 +2,14 @@ Start server
 python httpd.py -r ./www -p 8000
 
 Проверка:
-curl -i http://localhost:8000/ → 200
-
-curl -I http://localhost:8000/forbidden → 403
-
-curl -i http://localhost:8000/unknown → 404
-
+http://localhost:8000/ → возвращает index.html
+http://localhost:8000/page → возвращает page.html
+http://localhost:8000/forbidden.html → 403, ошибка
+http://localhost:8000/unknown.html → 404, ошибка
 curl -X POST http://localhost:8000/ → 405
 
 
+В сервере реализовано следующее:
 
 Парсинг аргументов командной строки (-r, -w) 
 
@@ -26,4 +25,3 @@ Content-Type для: .html, .css, .js, .jpg, .jpeg, .png, .gif, .swf
 
 Декодирование URL (%XX, пробелы)
 
-Опционально: многопроцессная обработка с помощью multiprocessing

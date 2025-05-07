@@ -7,7 +7,7 @@ import mimetypes
 
 class SimpleHandler(BaseHTTPRequestHandler):
     server_version = "CustomHTTP/0.1"
-    document_root = "."  # будет установлено из аргумента -r
+    document_root = "." 
 
     def do_GET(self):
         self.handle_get_head()
@@ -20,7 +20,7 @@ class SimpleHandler(BaseHTTPRequestHandler):
         clean_path = path.lstrip("/")
         full_path = os.path.join(self.document_root, clean_path)
 
-        if os.path.isdir(full_path):  # если путь — директория
+        if os.path.isdir(full_path):
             full_path = os.path.join(full_path, "index.html")
 
         if not os.path.exists(full_path) or not os.path.isfile(full_path):
@@ -53,7 +53,6 @@ class SimpleHandler(BaseHTTPRequestHandler):
         self.send_header("Connection", "close")
         self.end_headers()
             
-        # Отправляем тело ответа
         self.wfile.write(body)
 
     def method_not_allowed(self):
@@ -62,7 +61,6 @@ class SimpleHandler(BaseHTTPRequestHandler):
         self.send_header("Connection", "close")
         self.end_headers()
         self.wfile.write(b'Method Not Allowed\n')
-    # Обработка всех остальных методов — 405
     
     def do_POST(self): self.method_not_allowed()
     def do_PUT(self): self.method_not_allowed()
