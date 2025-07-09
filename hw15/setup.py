@@ -1,9 +1,13 @@
 from setuptools import setup, Extension
 
+example_module = Extension[
+    'example',
+    sources=['testplugin.c']
+]
+
 setup(
-    name="testplugin1",
+    name="example",
     version="0.1",
-    ext_modules=[
-        Extension("testplugin1", sources=["testplugin.c"])
-    ]
+    description = "Example module in C",
+    ext_modules=[example_module],
 )
