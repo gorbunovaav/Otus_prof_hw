@@ -1,0 +1,6 @@
+setup.py
+testplugin.c
+testplugin.egg-info/PKG-INFO
+testplugin.egg-info/SOURCES.txt
+testplugin.egg-info/dependency_links.txt
+testplugin.egg-info/top_level.txt
